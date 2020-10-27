@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+{% load staticfiles %}
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+
+<script src='https://www.google.com/recaptcha/api.js'></script>
+
+<link rel="stylesheet" href={% static "css.css" %}>
+<script src={% static "js.js" %}></script>
+
+<meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>{% block title %}Shop{% endblock title %}</title>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light">
+		      <a class="navbar-brand" href="{% url 'index' %}"><img src="/media/logo.jpeg" width="30" height="30" class="d-inline-block align-top" alt=""> Mercoin Shop</a>
+		      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    			<span class="navbar-toggler-icon"></span>
+  				</button>
+
+		    <div class="collapse navbar-collapse navbar-responsive-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto">
+			
+				
+				<li class="nav-item"><a href="{% url 'newart' %}" class="nav-link"><span class='glyphicon glyphicon-usd' aria-hidden='true'></span> Publicar</a></li>
+				
+					
+			{% block nav %}{% endblock nav %}
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+			{% block navr %}{% endblock navr %}
+
+			<form class="form-inline my-2 my-lg-0" method="get" action="/search/.">
+		      <input class="form-control mr-sm-2" type="search" placeholder="Buscar..." aria-label="Buscar" name="q">
+		      <button class="btn my-2 my-sm-0" type="submit">Buscar</button>
+		    </form>
+
+					{% if user.is_authenticated %}
+				<li>
+					<a class="nav-link" href="{% url 'userindex' user_id=request.user.id %}">Mi Perfil</a>
+				</li>
+				{% endif %}
+				<li>
+					{% if user.is_authenticated %}
+					<a class="nav-link" href="{% url 'logoutpath' %}"><span class='glyphicon glyphicon-off' aria-hidden='true'></span> Logout</a>
+					{% else %}
+					<a class="nav-link" href="{% url 'login' %}">Login</a>
+					{% endif %}
+				</li>
+			</ul>
+		</div>
+	</nav>
+<div style="height:20px;"></div>
+{% if mensajeerror %}
+<div class="alert alert-danger" role="alert">
+  {{ mensajeerror }}
+</div>
+{% endif %}
+
+{% if mensajesuc %}
+<div class="alert alert-success" role="alert">
+  {{ mensajesuc }}
+</div>
+{% endif %}
+
+{% block main %}
+	
+{% endblock main %}
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+
+
+</body>
+</html>

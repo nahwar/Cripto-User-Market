@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% block title %}{{ articulo.nombre }} - Shop{% endblock title %}
+{% block main %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4">
+      <div class="card" >
+				<img class="card-img-top img-responsive" src=/media/{{articulo.imagen}}>
+        <div class="card-body">
+        <h3 class="card-title">Vendedor: <a href="{% url 'userindex' user_id=articulo.owner.id %}">{{articulo.owner}}</a></h3>
+
+        {% if articulo.envionacional %}
+        <h4 class="card-text">Envio Nacional</h4>
+        {% endif %}
+        {% if articulo.enviointer %}
+        <h4 class="card-text">Envio Internacional</h4>
+        {% endif %}
+
+        
+        <h4 class="card-text">Detalles de Envio:</h4>
+        <p>{{articulo.detallesenvio}}</p>
+
+        <p>Pais: {{articulo.pais}}</p>
+        <p>Region: {{articulo.region}}</p>
+        <p>Ciudad: {{articulo.ciudad}}</p>
+        
+
+        {% if articulo.owner.id == request.user.id %}
+        <a href="editar/" class="btn btn-warning">Editar</a>
+        <a href="borrar/" class="btn btn-danger">Eliminar</a>
+        {% else %}
+        <a href="comprar/" class="btn btn-success">Comprar</a>
+        {% endif %}
+        </div>
+      </div>
+			</div>
+  			<div class="col-md-8">
+{% if articulo.imagen2.url is not None %}
+          <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" style="height:300px;">
+  <ol class="carousel-indicators">
+    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+    {% if articulo.imagen3.url is not None %}
+    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+    {% endif %}
+    {% if articulo.imagen4.url is not None %}
+    <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
+    {% endif %}
+    {% if articulo.imagen5.url is not None %}
+    <li data-target="#carouselExampleIndicators" data-slide-to="4"></li>
+    {% endif %}
+  </ol>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img class="d-block w-100" src=/media/{{articulo.imagen}} alt="First slide">
+    </div>
+    <div class="carousel-item">
+      <img class="d-block w-100" src=/media/{{articulo.imagen2}} alt="Second slide">
+    </div>
+    {% if articulo.imagen3.url is not None %}
+    <div class="carousel-item">
+      <img class="d-block w-100" src=/media/{{articulo.imagen3}} alt="Third slide">
+    </div>
+    {% endif %}
+    {% if articulo.imagen4.url is not None %}
+    <div class="carousel-item">
+      <img class="d-block w-100" src=/media/{{articulo.imagen4}} alt="Third slide">
+    </div>
+    {% endif %}
+    {% if articulo.imagen5.url is not None %}
+    <div class="carousel-item">
+      <img class="d-block w-100" src=/media/{{articulo.imagen5}} alt="Third slide">
+    </div>
+    {% endif %}
+  </div>
+  <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previa</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Siguiente</span>
+  </a>
+</div>
+{% endif %}
+
+  				<div class="card">
+            <div class="card-body">
+  				<h2 class="card-title">{{articulo.nombre}}</h2>
+
+          <h2 class="card-title">{{articulo.precio}}MRN</h2>
+          
+          <p class="card-text">{{articulo.descripcion}}</p>
+          
+          </div>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Preguntas</h4>
+
+              {% if preguntas %}
+              
+              
+              {% for i in preguntas %}
+              <ul class="list-group list-group-flush">
+              <li class="list-group-item">{{i.texto}}</li>
+
+              {% if articulo.owner.id == request.user.id and i.respondida == False %}
+              <!-- Boton Responder -->
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal{{i.id}}">Responder</button>
+
+              <!-- Modal -->
+              <div class="modal fade" id="modal{{i.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Responder</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form action="/pregunta/{{i.id}}/resp/" method="post">
+                      {% csrf_token %}
+                      <div class="form-group">
+                        <p>{{i.texto}}</p>
+                        </div>
+                      <div class="form-group">
+                      <textarea class="form-control" type="text" name="texto" id="texto" placeholder="Respuesta..." required/></textarea>
+                      </div>
+                      
+                    </div>
+                    <div class="modal-footer">
+                      <input class="btn btn-primary btn-raised" type="submit" value="Responder" />
+                    </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+
+              {% if i.respondida == True %}
+              
+              {% for respuesta in respuestas %}
+
+              {% if respuesta.pregunta.id == i.id %}
+              <li class="list-group-item respuesta">Respuesta: {{respuesta.texto}}</li>
+              
+              {% endif %}
+
+              {% endfor %}
+              
+              {% endif %}
+
+</ul>
+<div style="height:20px;"></div>
+              {% endfor %}
+              
+            
+              {% else %}
+              <p class="card-text">No hay preguntas</p>
+              {% endif %}
+
+              {% if articulo.owner.id != request.user.id %}
+              <div style="height:20px;"></div>
+              <form action="postpregunta/" method="post">
+              {% csrf_token %}
+              <div class="form-group">
+              <textarea class="form-control" type="text" name="texto" id="texto" placeholder="Nueva Pregunta..." required/></textarea>
+              </div>
+              <div class="form-group">
+              {{ captcha }}
+              </div>
+              <input class="btn btn-primary btn-raised" type="submit" value="Preguntar" />
+              </form>
+              {% endif %}
+
+            </div>
+          </div>
+
+  			</div>
+		</div>
+	</div>
+{% endblock main %}

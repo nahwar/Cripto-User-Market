@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}Perfil - Shop{% endblock title %}
+{% block main %}
+
+
+<div class="container" id="container">
+	<div class="row">
+	{% if notificaciones %}
+	<div class="col-sm-3">
+	<div class="card">
+		<div class="card-body">
+		<h2 class="card-title">{{user}}</h2>
+		<h2>Notificaciones</h2>
+		
+<ul class="list-group list-group-flush">
+			{% for i in notificaciones %}
+			<li class="list-group-item">{{i.texto|truncatewords:"30"}}</li>
+			{% endfor %}
+</ul>
+		</div>
+	</div>
+
+	</div>
+
+	<div class="col-sm-9">
+	{% else %}
+	<div class="col-sm-12">
+	{% endif %}
+	<nav class="nav nav-tabs" id="myTab" role="tablist">
+  <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Articulos Publicados</a>
+  <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Compras</a>
+  <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Ventas</a>
+</nav>
+
+<div class="tab-content" id="nav-tabContent">
+<div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+
+    <div class="card" >
+    	<div class="card-body">
+ 		
+ 		{% for i in articulos %}
+		<li class="list-group-item"><a href="{% url 'articulo' articulo_id=i.id %}">{{i.nombre|truncatewords:"10"}}</a></li>
+		{% endfor %}
+    
+    </div>
+	</div>
+
+</div>
+
+<div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+	<div class="card" >
+		<div class="card-body" >
+
+	{% if compras %}
+	{% for i in compras %}
+		<li class="list-group-item">
+<a href="#collapsec{{i.id}}" data-toggle="collapse" aria-expanded="false" aria-controls="collapsec{{i.id}}">
+		{{i.articulo.nombre|truncatewords:"10"}}
+</a>
+<div class="collapse" id="collapsec{{i.id}}">
+  <div class="card card-body">
+    <h3>Vendedor {{i.vendedor}}</h3>
+    <h3>Articulo <a href="/articulo/{{i.articulo.id}}">{{i.articulo.nombre}}</a></h3>
+    {% if i.vendconfirm and i.compconfirm %}
+    <h3>Transaccion finalizada</h3>
+    {% else %}
+
+    {% if i.vendconfirm%}
+    <h3>El vendedor confirmo la transaccion</h3>
+	{% else %}
+	<h3>El vendedor todavia no confirmo la transaccion</h3>
+	{% endif %}
+
+	{% if i.compconfirm%}
+    <h3>Ya confirmaste la transaccion</h3>
+	{% else %}
+	<h3>Confirmar que la transaccion se completo?</h3>
+
+		<form action="/compra/{{i.id}}/" method="post">
+              {% csrf_token %}
+
+<div class="form-group">
+              <div class="radio">
+				  <label><input type="radio" name="rad" value="si" required>Calificar Positivo</label>
+				</div>
+				<div class="radio">
+				  <label><input type="radio" name="rad" value="no">Calificar Negativo</label>
+				</div>
+			</div>
+
+              <div class="form-group">
+              </div>
+              <button name="conf" value="c" class="btn btn-primary btn-raised" type="submit">Confirmar</button>
+        </form>
+
+	{% endif %}
+
+    {% endif %}
+  </div>
+</div>
+		</li>
+		{% endfor %}
+	{% else %}
+	<h3 class="card-title">Ninguna compra concretada</h3>
+{% endif %}
+</div>
+</div>
+</div>
+
+<div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+	<div class="card" >
+		<div class="card-body" >
+	{% if ventas %}
+	{% for i in ventas %}
+		<li class="list-group-item">
+		<a href="#collapsev{{i.id}}" data-toggle="collapse" aria-expanded="false" aria-controls="collapsev{{i.id}}">
+		{{i.articulo.nombre|truncatewords:"10"}} - {{i.comprador|truncatewords:"10"}}
+</a>
+<div class="collapse" id="collapsev{{i.id}}">
+  <div class="card card-body">
+    <h3>Comprador {{i.comprador}}</h3>
+    <h3>Articulo <a href="/articulo/{{i.articulo.id}}">{{i.articulo.nombre}}</a></h3>
+    {% if i.vendconfirm and i.compconfirm %}
+    <h3>Transaccion finalizada</h3>
+    {% else %}
+
+    {% if i.compconfirm%}
+    <h3>El comprador confirmo la transaccion!</h3>
+	{% else %}
+	<h3>El comprador todavia no confirmo la transaccion</h3>
+	{% endif %}
+
+	{% if i.vendconfirm%}
+    <h3>Ya confirmaste la transaccion</h3>
+	{% else %}
+	<h3>Confirmar que la transaccion se completo?</h3>
+
+		<form action="/compra/{{i.id}}/" method="post">
+              {% csrf_token %}
+
+              <div class="form-group">
+              </div>
+              <button name="conf" value="v" class="btn btn-primary btn-raised" type="submit">Confirmar</button>
+        </form>
+
+	{% endif %}
+
+    {% endif %}
+  </div>
+</div>
+	</li>
+		{% endfor %}
+	{% else %}
+	<h3 class="card-title">Ninguna venta concretada</h3>
+{% endif %}
+</div>
+</div>
+</div>
+
+
+</div>
+
+</div>
+
+
+</div>
+</div>
+{% endblock main %}

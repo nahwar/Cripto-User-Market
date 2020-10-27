@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Nuevo Articulo - Shop{% endblock title %}
+{% block main %}
+<div class="container">
+
+<form action="{% url 'newart' %}" method="post" enctype="multipart/form-data">
+{% csrf_token %}
+		<div class="form-row">
+		<div class="form-group col-md-6">
+			<label for="nombre">Titulo del Articulo</label>
+		<input class="form-control" type="text" name="nombre" id="nombre" placeholder="Titulo" maxlength="100" required/>
+		</div>
+
+		<div class="form-group col-md-6">
+			<label for="precio">Precio</label>
+			<div class="input-group">
+				<input type="text" class="form-control" name="precio" id="precio" maxlength="10" placeholder="00.0000000" required>
+				<div class="input-group-addon">MRN</div>
+			</div>
+		</div>
+		</div>
+
+		<div class="form-row">
+			<div class="form-group col-md-4">
+				<label for="Pais">Pais</label>
+				<input class="form-control" type="text" name="pais" id="pais" placeholder="Pais" maxlength="100" required/>
+			</div>
+			<div class="form-group col-md-4">
+				<label for="ciudad">Ciudad</label>
+				<input class="form-control" type="text" name="ciudad" id="ciudad" placeholder="Ciudad (Opcional)" maxlength="100"/>
+			</div>
+			<div class="form-group col-md-4">
+				<label for="region">Region</label>
+				<input class="form-control" type="text" name="region" id="region" placeholder="Region (Opcional)" maxlength="100"/>
+			</div>
+		</div>
+
+		<div class="form-row align-items-center">
+			<div class="form-group col-md-6">
+				<div class="form-group">
+					<label for="sel1">Categoria:</label>
+					  <select class="form-control" id="sel1" name="cat">
+					    {% for i in categorias %}
+					    <option>{{i.nombre}}</option>
+					    {% endfor %}
+					  </select>
+				</div>
+				<div class="form-check">
+				  <label class="custom-control custom-checkbox">
+				  <input type="checkbox" class="custom-control-input" name="nac">
+				  <span class="custom-control-indicator"></span>
+				  <span class="custom-control-description">Envio Nacional</span>
+				</label>
+				</div>
+				<div class="form-check">
+				  <label class="custom-control custom-checkbox">
+				  <input type="checkbox" class="custom-control-input" name="int">
+				  <span class="custom-control-indicator"></span>
+				  <span class="custom-control-description">Envio Internacional</span>
+				</label>
+				</div>
+			</div>
+
+			<div class="form-group col-md-6">
+			<label>Detalles de Envio</label>
+			<textarea class="form-control" rows="3" name="detallesenvio" maxlength="500" placeholder="(Opcional)"></textarea>
+			</div>
+		</div>
+		<div class="form-group">
+		<label>Descripcion</label>
+		<textarea class="form-control" rows="5" name="descripcion" maxlength="3000" required></textarea>
+		</div>
+
+		<div class="form-group">
+			<label for="image">Imagen Principal </label><br>
+        <input id="id_image" type="file" class="" name="image">
+    	</div>
+    	<div class="form-group">
+			<label for="image">Imagenes Complementarias </label><br>
+        <input id="id_image" type="file" class="" name="image2"><br>
+        <input id="id_image" type="file" class="" name="image3"><br>
+        <input id="id_image" type="file" class="" name="image4"><br>
+        <input id="id_image" type="file" class="" name="image5">
+    	</div>
+
+    	<div class="form-group">
+    	{{ captcha }}
+    </div>
+    <input class="btn btn-primary" type="submit" value="Publicar Articulo" />
+</form>
+
+</div>
+{% endblock main %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="container">
+    <h2>Resultados de la Busqueda</h2>
+
+    
+
+        {% if query %}
+        
+            <div class="row">
+            {% for i in page.object_list %}
+        <div class="col-sm-3">
+        <div class="card" style="height:300px;">
+            <a href="{% url 'articulo' articulo_id=i.object.id %}">
+        <img src="/media/{{ i.object.imagen }}" class="img-responsive card-img-top">
+        </a>
+        <div  class="card-body" >
+        
+        <p class="card-title"><a href="{% url 'articulo' articulo_id=i.object.id %}">{{i.object.nombre|truncatewords:"6"}}</a></p>
+        <p>{{i.object.precio}}<strong> MRN</strong></p>
+        </div>
+        </div>
+        
+        </div>
+        <div style="height:20px;"></div>
+        </div>
+        {% empty %}
+                <p>No se encontraron resultados</p>
+    {% endfor %}
+
+            {% if page.has_previous or page.has_next %}
+                <div>
+                    {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+                    |
+                    {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            {# Show some example queries to run, maybe query syntax, something else? #}
+            <p>No se encontraron resultados</p>
+        {% endif %}
+    
+</div>
+{% endblock %}
